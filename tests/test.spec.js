@@ -8,7 +8,7 @@ const verifyMetaTags = async (page, route) => {
   const h1 = await page.$('h1');
 
   if (title) {
-    console.log('\x1b[32m%s\x1b[0m', `Título encontrado en ${route}: "${title}"`);
+    console.log('\x1b[32m%s\x1b[0m', `<title> encontrado en ${route}: "${title}"`);
   } else {
     console.log('\x1b[31m%s\x1b[0m', `No se encontró el tag <title> en la página ${route}.`);
   }
