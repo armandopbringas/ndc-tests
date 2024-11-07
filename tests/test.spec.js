@@ -1,35 +1,38 @@
 import { test, expect } from '@playwright/test';
 import { routes } from '../utils/utils.js';
 
-const verifyMetaTags = async (page, route) => {
-  await page.goto(route);
-  const title = await page.title();
-  const metaDescription = await page.$('meta[data-react-helmet="true"][name="description"]');
-  const h1 = await page.$('h1');
-
-  if (title) {
-    console.log('\x1b[32m%s\x1b[0m', `<title> encontrado en ${route}: "${title}"`);
-  } else {
-    console.log('\x1b[31m%s\x1b[0m', `No se encontró el tag <title> en la página ${route}.`);
-  }
-
-  if (metaDescription) {
-    const descriptionContent = await metaDescription.getAttribute('content');
-    console.log('\x1b[32m%s\x1b[0m', `Descripción encontrada en ${route}: "${descriptionContent}"`);
-  } else {
-    console.log('\x1b[31m%s\x1b[0m', `No se encontró el meta tag de descripción en la página ${route}.`);
-  }
-
-  if (h1) {
-    const h1Content = await h1.textContent();
-    console.log('\x1b[32m%s\x1b[0m', `El contenido del h1 en ${route} es: "${h1Content}"`);
-  } else {
-    console.log('\x1b[31m%s\x1b[0m', `No se encontró el tag <h1> en la página ${route}.`);
-  }
-};
-
 routes.forEach(route => {
-  test(`Verificar meta tags en ${route}`, async ({ page }) => {
-    await verifyMetaTags(page, route);
+  
+  test.describe(`Verificar meta tags en ${route}`, () => {
+    
+    test(`Debe tener un <title> en ${route}`, async ({ page }) => {
+      await page.goto(route);
+      const title = await page.title();
+      console.log('\x1b[32m%s\x1b[0m', `<title> encontrado en ${route}: "${title}"`);
+      await expect(title).not.toBeNull();
+    });
+
+    test(`Debe tener meta descripción en ${route}`, async ({ page }) => {
+      await page.goto(route);
+      const metaDescription = await page.locator('meta[data-react-helmet="true"][name="description"]');
+      const descriptionContent = await metaDescription.getAttribute('content');
+      console.log(descriptionContent
+        ? `\x1b[32mDescripción encontrada en ${route}: "${descriptionContent}"\x1b[0m`
+        : `\x1b[31mNo se encontró el meta tag de descripción en la página ${route}.\x1b[0m`);
+      await expect(metaDescription).toHaveAttribute('content', /.*/);
+    });
+
+    test(`Debe tener al menos un <h1> en ${route}`, async ({ page }) => {
+      await page.goto(route);
+      const h1Elements = await page.locator('h1');
+      const h1Count = await h1Elements.count();
+      expect(h1Count).toBeGreaterThan(0);
+      
+      for (let i = 0; i < h1Count; i++) {
+        const h1Content = await h1Elements.nth(i).textContent();
+        console.log(`\x1b[32mContenido del h1 #${i + 1} en ${route}: "${h1Content}"\x1b[0m`);
+        await expect(h1Elements.nth(i)).toHaveText(/.+/); // Fallará si <h1> está vacío
+      }
+    });
   });
 });

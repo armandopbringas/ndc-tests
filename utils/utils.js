@@ -16,7 +16,7 @@ export const routes = [
   'http://localhost:8000/pro-bono-community-design',
   'http://localhost:8000/get-involved',
   'http://localhost:8000/work-with-us',
-  'http://localhost:8000/speaking-engagement-request',
+  'http://localhost:8000/speaking-engagement',
   'http://localhost:8000/style-guides',
   'http://localhost:8000/privacy-policy',
   'http://localhost:8000/404',

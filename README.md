@@ -2,6 +2,8 @@
 
 Correr: ```npm i```
 Después correr: ```npx playwright test```
+with report ```npx playwright test --reporter=html```
+show report ```npx playwright show-report```
 
 **Summary:** Todas las pruebas pasan con el objetivo de mostrar en los logs que elementos de SEO si fueron encontrados y cuales no en cada una de las rutas del proyect.
 
